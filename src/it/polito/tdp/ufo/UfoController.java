@@ -5,6 +5,7 @@
 package it.polito.tdp.ufo;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.ufo.model.AnnoCount;
@@ -35,7 +36,35 @@ public class UfoController {
 
     @FXML
     void handleAnalizza(ActionEvent event) {
+    	String stato  = boxStato.getValue();
+    	if(stato==null) {
+    		txtResult.appendText("Devi selezionare uno stato!!!");
+    		return;
+    	}
+    	List<String> predecessori = this.model.getPredecessori(stato);
+    	List<String> successori = this.model.getSuccessori(stato);
+    	List<String> raggiungibili = this.model.getRaggiungibili(stato);
     
+    	txtResult.clear();
+    	
+    	
+    	txtResult.appendText("Ecco i predecessori:\n");
+    	for(String i: predecessori) {
+    		txtResult.appendText(i + "\n");
+    	}
+    	
+    	
+    	txtResult.appendText("Ecco i successori:\n");
+    	for(String i: successori) {
+    		txtResult.appendText(i + "\n");
+    	}
+    	
+    	
+    	txtResult.appendText("Ecco i nodi raggiungibili:\n");
+    	for(String i: raggiungibili) {
+    		txtResult.appendText(i + "\n");
+    	}
+    	
     }
 
     @FXML
@@ -51,13 +80,23 @@ public class UfoController {
     		txtResult.appendText("\nNumero vetici: " + this.model.getNVertici());
     		txtResult.appendText("\nNumero archi: " + this.model.getNArchi());
     		
-    		this.boxStato.getItems().addAll(this.model.getStati());
+    		this.boxStato.getItems().addAll(this.model.getStati(anno.getYear()));
     	}
     }
 
     @FXML
     void handleSequenza(ActionEvent event) {
-
+    	String stato  = boxStato.getValue();
+    	if(stato==null) {
+    		txtResult.appendText("Devi selezionare uno stato!!!");
+    		return;
+    	}
+      List<String> percorso = this.model.getPercorsoMassimo(stato);
+      txtResult.clear();
+      txtResult.appendText("Percorso massimo : \n");
+      for(String s: percorso) {
+    	  txtResult.appendText(s + "-");
+      }
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -71,6 +110,7 @@ public class UfoController {
     public void setModel(Model model) {
     	this.model = model;
     	this.boxAnno.getItems().addAll(this.model.getAnni());
+    	//this.boxStato.getItems().addAll(this.model.getStati());
     }
     
     

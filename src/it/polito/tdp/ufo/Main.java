@@ -1,4 +1,4 @@
-package it.polito.tdp.ufo;
+ package it.polito.tdp.ufo;
 	
 import it.polito.tdp.ufo.model.Model;
 import javafx.application.Application;

@@ -8,6 +8,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleDirectedGraph;
+import org.jgrapht.traverse.DepthFirstIterator;
 
 import it.polito.tdp.ufo.db.SightingsDAO;
 
@@ -16,7 +17,7 @@ public class Model {
 	//I vertici del grafo qui sono stringhe semplici non abbiamo quindi bisogno di una mappa ma ci basta una lista
 	
 	
-	
+	private List<String> ottima = new LinkedList<String>();
 	
 	private SightingsDAO dao;
 	private List<String> stati;
@@ -63,9 +64,9 @@ public class Model {
 
 
 
-	public String getStati() {
+	public List<String> getStati(Year y) {
 		// TODO Auto-generated method stub
-		return this.getStati();
+		return this.dao.getStati(y);
 	}
 	
 	
@@ -79,8 +80,76 @@ public class Model {
 	}
 	
 	
-	public List<String> getRaggiungibili(){
+	//VISITA DEL GRAFO IN AMPIEZZA O PROFONDITA'
+	
+	public List<String> getRaggiungibili(String stato){
 		List<String> raggiungibili = new LinkedList<String>();
-		return null;   //da cambiare!!!!
+		DepthFirstIterator<String, DefaultEdge> dp =new DepthFirstIterator<String, DefaultEdge>(this.grafo,stato);
+		
+		dp.next(); // non voglio il primo elemento faccio un dp a vuoto in modo che scarti il primo elemento
+		
+		while(dp.hasNext()) {
+			raggiungibili.add(dp.next());
+		}
+		
+		
+		return raggiungibili;
 	}
+	
+	
+	
+	/**
+	 * RICORSIONE!
+	 */
+	
+	
+	public List<String> getPercorsoMassimo(String partenza){
+		this.ottima = new LinkedList<String>();
+		List<String> parziale = new LinkedList<String>();
+		parziale.add(partenza);
+		
+		cercaPercorso(parziale);
+		
+		
+		
+		return this.ottima;
+	}
+
+
+
+	private void cercaPercorso(List<String> parziale) {
+		
+		if(parziale.size() > ottima.size()) {
+			this.ottima = new LinkedList(parziale); //clono la lista
+		}
+		
+		List<String> candidati = this.getSuccessori(parziale.get(parziale.size()-1));
+		for(String candidato: candidati) {
+			if(!parziale.contains(candidato)) {
+				parziale.add(candidato);
+				this.cercaPercorso(parziale); 
+				parziale.remove(parziale.size()-1);
+		}
+	}
+	
+	
+	}	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
